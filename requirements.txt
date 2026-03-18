@@ -1,4 +1,7 @@
 fastapi==0.115.12
 uvicorn[standard]==0.34.0
 pydantic==2.10.6
-websockets==14.2
+openai==1.68.2
+sounddevice==0.5.1
+numpy==2.2.4
+python-dotenv==1.0.1
