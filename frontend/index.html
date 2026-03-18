@@ -3,244 +3,73 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TranslateChurch – Live Text</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: system-ui, sans-serif;
-      background: #0f172a;
-      color: #f1f5f9;
-      min-height: 100dvh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 1.5rem;
-    }
-
-    h1 {
-      margin: 0 0 0.25rem;
-      font-size: 1.5rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .subtitle {
-      color: #94a3b8;
-      font-size: 0.85rem;
-      margin-bottom: 1.5rem;
-    }
-
-    /* Language selector */
-    .lang-bar {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .lang-btn {
-      padding: 0.45rem 1.1rem;
-      border: 2px solid #334155;
-      border-radius: 999px;
-      background: transparent;
-      color: #94a3b8;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .lang-btn:hover { border-color: #60a5fa; color: #f1f5f9; }
-
-    .lang-btn.active {
-      border-color: #3b82f6;
-      background: #1d4ed8;
-      color: #fff;
-    }
-
-    /* Live text display */
-    #live-text {
-      width: 100%;
-      max-width: 640px;
-      min-height: 180px;
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 0.75rem;
-      padding: 1.25rem 1.5rem;
-      font-size: 1.6rem;
-      line-height: 1.5;
-      word-break: break-word;
-    }
-
-    #live-text.empty { color: #475569; font-style: italic; font-size: 1rem; }
-
-    /* Status badge */
-    #status {
-      margin-top: 1rem;
-      font-size: 0.78rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      color: #64748b;
-    }
-
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #475569;
-    }
-
-    .dot.connected { background: #22c55e; }
-    .dot.error     { background: #ef4444; }
-
-    /* Test input (hidden in production) */
-    .test-bar {
-      margin-top: 1.5rem;
-      display: flex;
-      gap: 0.5rem;
-      width: 100%;
-      max-width: 640px;
-    }
-
-    .test-bar input {
-      flex: 1;
-      padding: 0.5rem 0.85rem;
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 0.5rem;
-      color: #f1f5f9;
-      font-size: 0.9rem;
-    }
-
-    .test-bar button {
-      padding: 0.5rem 1rem;
-      background: #2563eb;
-      border: none;
-      border-radius: 0.5rem;
-      color: #fff;
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
-
-    .test-bar button:hover { background: #1d4ed8; }
-
-    .test-label {
-      margin-top: 0.4rem;
-      font-size: 0.72rem;
-      color: #475569;
-      text-align: center;
-      width: 100%;
-      max-width: 640px;
-    }
-  </style>
+  <title>TranslateChurch Live Translation</title>
+  <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
+  <main class="app-shell">
+    <header class="hero">
+      <p class="eyebrow">Church live translation MVP</p>
+      <h1>TranslateChurch</h1>
+      <p class="intro">Choose your language and follow the sermon live on your phone.</p>
+    </header>
 
-  <h1>⛪ TranslateChurch</h1>
-  <p class="subtitle">Live sermon translation</p>
+    <section class="controls-card">
+      <div>
+        <p class="label">Language</p>
+        <div class="language-tabs" id="language-tabs">
+          <button class="language-tab active" data-language="en">English</button>
+          <button class="language-tab" data-language="uk">Українська</button>
+          <button class="language-tab" data-language="no">Norsk</button>
+        </div>
+      </div>
+      <div class="status-wrap">
+        <span class="status-dot" id="status-dot"></span>
+        <span id="status-text">Connecting…</span>
+      </div>
+    </section>
 
-  <!-- Language channel selector -->
-  <div class="lang-bar" id="lang-bar">
-    <button class="lang-btn active" data-lang="en">🇬🇧 English</button>
-    <button class="lang-btn"        data-lang="uk">🇺🇦 Ukrainian</button>
-  </div>
+    <section class="message-card">
+      <div class="message-meta">
+        <div>
+          <p class="label">Live text</p>
+          <p class="message-language" id="current-language-label">English</p>
+        </div>
+        <p class="timestamp" id="timestamp-label">No updates yet</p>
+      </div>
+      <article class="live-text empty" id="live-text">Waiting for the next translated segment…</article>
+      <details class="secondary-panel">
+        <summary>Show all languages</summary>
+        <dl>
+          <div>
+            <dt>Norsk</dt>
+            <dd id="text-no">—</dd>
+          </div>
+          <div>
+            <dt>English</dt>
+            <dd id="text-en">—</dd>
+          </div>
+          <div>
+            <dt>Ukrainian</dt>
+            <dd id="text-uk">—</dd>
+          </div>
+        </dl>
+      </details>
+    </section>
 
-  <!-- Live translated text -->
-  <div id="live-text" class="empty">Waiting for live text…</div>
+    <section class="test-card" id="test-card" hidden>
+      <div>
+        <p class="label">Test mode helper</p>
+        <p class="test-copy">Use this only when the backend runs with <code>TEST_MODE=true</code>.</p>
+      </div>
+      <div class="test-form">
+        <textarea id="test-transcript" rows="3" placeholder="Write a Norwegian sentence to simulate a recognized transcript…"></textarea>
+        <button id="send-test-button" type="button">Send test transcript</button>
+      </div>
+      <p class="test-result" id="test-result"></p>
+    </section>
+  </main>
 
-  <!-- Connection status -->
-  <div id="status">
-    <span class="dot" id="dot"></span>
-    <span id="status-text">Connecting…</span>
-  </div>
-
-  <!-- Test input (send text directly to the current channel) -->
-  <div class="test-bar">
-    <input type="text" id="test-input" placeholder="Type test text and press Send…" />
-    <button id="send-btn">Send</button>
-  </div>
-  <p class="test-label">Test input – simulates translated text arriving from the server</p>
-
-<script>
-  const liveText   = document.getElementById('live-text');
-  const dot        = document.getElementById('dot');
-  const statusText = document.getElementById('status-text');
-  const langBar    = document.getElementById('lang-bar');
-  const testInput  = document.getElementById('test-input');
-  const sendBtn    = document.getElementById('send-btn');
-
-  let ws        = null;
-  let currentLang = 'en';
-
-  /* ── helpers ─────────────────────────────────────────────────── */
-
-  function setStatus(state, label) {
-    dot.className = 'dot ' + state;
-    statusText.textContent = label;
-  }
-
-  function showText(text) {
-    liveText.textContent = text;
-    liveText.classList.remove('empty');
-  }
-
-  /* ── WebSocket ───────────────────────────────────────────────── */
-
-  function connect(lang) {
-    if (ws) { ws.onclose = null; ws.close(); }
-
-    const proto = location.protocol === 'https:' ? 'wss' : 'ws';
-    const url   = `${proto}://${location.host}/ws/${lang}`;
-
-    ws = new WebSocket(url);
-    setStatus('', 'Connecting…');
-
-    ws.onopen = () => {
-      setStatus('connected', `Connected · ${lang.toUpperCase()}`);
-    };
-
-    ws.onmessage = (evt) => {
-      showText(evt.data);
-    };
-
-    ws.onerror = () => {
-      setStatus('error', 'Connection error');
-    };
-
-    ws.onclose = () => {
-      setStatus('error', 'Disconnected – retrying in 3 s…');
-      setTimeout(() => connect(currentLang), 3000);
-    };
-  }
-
-  /* ── Language buttons ────────────────────────────────────────── */
-
-  langBar.addEventListener('click', (e) => {
-    const btn = e.target.closest('.lang-btn');
-    if (!btn) return;
-    langBar.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentLang = btn.dataset.lang;
-    liveText.textContent = 'Waiting for live text…';
-    liveText.classList.add('empty');
-    connect(currentLang);
-  });
-
-  /* ── Test send ───────────────────────────────────────────────── */
-
-  function sendTestMessage() {
-    const text = testInput.value.trim();
-    if (!text || !ws || ws.readyState !== WebSocket.OPEN) return;
-    ws.send(text);
-    testInput.value = '';
-  }
-
-  sendBtn.addEventListener('click', sendTestMessage);
-  testInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendTestMessage(); });
-
-  /* ── Boot ────────────────────────────────────────────────────── */
-  connect(currentLang);
-</script>
+  <script src="/static/app.js" defer></script>
 </body>
 </html>
