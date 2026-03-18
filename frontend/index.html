@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TranslateChurch Live Translation</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="hero">
+      <p class="eyebrow">Church live translation MVP</p>
+      <h1>TranslateChurch</h1>
+      <p class="intro">Choose your language and follow the sermon live on your phone.</p>
+    </header>
+
+    <section class="controls-card">
+      <div>
+        <p class="label">Language</p>
+        <div class="language-tabs" id="language-tabs">
+          <button class="language-tab active" data-language="en">English</button>
+          <button class="language-tab" data-language="uk">Українська</button>
+          <button class="language-tab" data-language="no">Norsk</button>
+        </div>
+      </div>
+      <div class="status-wrap">
+        <span class="status-dot" id="status-dot"></span>
+        <span id="status-text">Connecting…</span>
+      </div>
+    </section>
+
+    <section class="message-card">
+      <div class="message-meta">
+        <div>
+          <p class="label">Live text</p>
+          <p class="message-language" id="current-language-label">English</p>
+        </div>
+        <p class="timestamp" id="timestamp-label">No updates yet</p>
+      </div>
+      <article class="live-text empty" id="live-text">Waiting for the next translated segment…</article>
+      <details class="secondary-panel">
+        <summary>Show all languages</summary>
+        <dl>
+          <div>
+            <dt>Norsk</dt>
+            <dd id="text-no">—</dd>
+          </div>
+          <div>
+            <dt>English</dt>
+            <dd id="text-en">—</dd>
+          </div>
+          <div>
+            <dt>Ukrainian</dt>
+            <dd id="text-uk">—</dd>
+          </div>
+        </dl>
+      </details>
+    </section>
+
+    <section class="test-card" id="test-card" hidden>
+      <div>
+        <p class="label">Test mode helper</p>
+        <p class="test-copy">Use this only when the backend runs with <code>TEST_MODE=true</code>.</p>
+      </div>
+      <div class="test-form">
+        <textarea id="test-transcript" rows="3" placeholder="Write a Norwegian sentence to simulate a recognized transcript…"></textarea>
+        <button id="send-test-button" type="button">Send test transcript</button>
+      </div>
+      <p class="test-result" id="test-result"></p>
+    </section>
+  </main>
+
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
